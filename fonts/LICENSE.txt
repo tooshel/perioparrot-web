@@ -1,0 +1,1 @@
+onest-var.woff2: Copyright 2021 The Onest Project Authors (github.com/simpals/onest), SIL Open Font License 1.1 (https://openfontlicense.org)

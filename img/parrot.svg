@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 270" role="img" aria-label="PerioParrot, a blue and gold macaw perched on a dental probe">
+  <defs>
+    <linearGradient id="pp-body" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2f86ff"/><stop offset="1" stop-color="#1559d6"/></linearGradient>
+    <linearGradient id="pp-wing" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a5fd6"/><stop offset="1" stop-color="#0b3a9a"/></linearGradient>
+    <linearGradient id="pp-belly" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd54a"/><stop offset="1" stop-color="#ffb21f"/></linearGradient>
+    <linearGradient id="pp-steel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eef2f7"/><stop offset=".5" stop-color="#aab4c3"/><stop offset="1" stop-color="#d5dbe4"/></linearGradient>
+  </defs>
+  <!-- tail -->
+  <path d="M92 196 C78 222 62 246 40 266 L58 268 C78 250 96 228 110 204 Z" fill="#0b3a9a"/>
+  <path d="M104 200 C96 226 86 248 72 268 L88 268 C100 248 112 226 120 204 Z" fill="#1559d6"/>
+  <!-- body -->
+  <path d="M100 90 C70 108 64 168 90 204 C104 222 142 222 154 198 C172 166 164 110 140 92 Z" fill="url(#pp-body)"/>
+  <!-- belly -->
+  <path d="M136 108 C156 128 160 170 148 196 C140 212 120 214 110 202 C130 188 140 150 136 108 Z" fill="url(#pp-belly)"/>
+  <!-- wing -->
+  <path d="M98 108 C80 130 80 178 106 200 C118 208 128 198 124 184 C116 160 116 132 126 114 C120 102 106 100 98 108 Z" fill="url(#pp-wing)"/>
+  <g fill="none" stroke="#ffffff" stroke-opacity=".28" stroke-width="2.4" stroke-linecap="round">
+    <path d="M100 150 c6 4 12 4 18 0"/><path d="M102 168 c6 4 12 4 18 0"/><path d="M106 186 c5 3 10 3 14 0"/>
+  </g>
+  <!-- feet on the probe -->
+  <g fill="none" stroke="#5b6475" stroke-width="5" stroke-linecap="round">
+    <path d="M112 206 C110 214 112 220 118 222"/><path d="M132 206 C132 214 134 220 140 222"/>
+  </g>
+  <!-- head -->
+  <circle cx="126" cy="76" r="36" fill="url(#pp-body)"/>
+  <path d="M96 62 C100 40 124 32 142 42 C130 42 116 50 112 64 Z" fill="#34b36b"/>
+  <path d="M112 44 C106 30 112 18 124 18 C118 26 120 34 126 40 Z" fill="#34b36b"/>
+  <path d="M124 40 C124 26 134 18 146 22 C138 28 136 34 138 42 Z" fill="#2a9a5b"/>
+  <!-- face patch and eye -->
+  <path d="M124 64 C132 54 152 56 158 70 C162 82 154 94 140 94 C128 94 120 78 124 64 Z" fill="#ffffff"/>
+  <g stroke="#1b2333" stroke-opacity=".28" stroke-width="1.6" stroke-linecap="round" fill="none"><path d="M130 82 c3 1 6 1 8 0"/><path d="M132 88 c3 1 6 1 8 0"/></g>
+  <circle cx="142" cy="70" r="7.5" fill="#14203a"/>
+  <circle cx="144.5" cy="67.5" r="2.6" fill="#ffffff"/>
+  <!-- beak -->
+  <path d="M146 60 C174 52 194 72 187 99 C185 107 176 109 173 101 C176 88 168 80 150 82 Z" fill="#2b2f3a"/>
+  <path d="M150 82 C164 81 172 89 170 99 C163 105 153 101 149 92 Z" fill="#4a5162"/>
+  <!-- the probe it perches on -->
+  <rect x="14" y="222" width="116" height="13" rx="6.5" fill="url(#pp-steel)"/>
+  <g stroke="#8b96a8" stroke-width="1.4"><path d="M30 223v11M40 223v11M50 223v11M60 223v11M70 223v11"/></g>
+  <path d="M130 224 L210 227 L210 230 L130 233 Z" fill="#aab4c3"/>
+  <path d="M210 227 L226 228 L226 229 L210 230 Z" fill="#8b96a8"/>
+  <g fill="#14203a"><rect x="212" y="226.6" width="2.2" height="3.8"/><rect x="217" y="227" width="2.2" height="3"/><rect x="222" y="227.3" width="2.2" height="2.4"/></g>
+</svg>

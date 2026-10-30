@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PerioParrot | Say it, and your perio chart repeats it</title>
+<meta name="description" content="Speak pocket depths, bleeding, furcation, mobility, and recession. PerioParrot types them into your perio chart so your hands stay on the probe. Runs on the workstation; nothing goes to the cloud.">
+<link rel="canonical" href="https://perioparrot.tooshel.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="PerioParrot: chart perio by voice">
+<meta property="og:description" content="Speak the numbers. PerioParrot types them into your perio chart while your hands stay on the probe.">
+<meta property="og:url" content="https://perioparrot.tooshel.com/">
+<meta property="og:image" content="https://perioparrot.tooshel.com/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#1559d6">
+<link rel="icon" href="img/icon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="img/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="preload" href="fonts/onest-var.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:'Onest';src:url(fonts/onest-var.woff2) format('woff2');font-weight:100 900;font-display:swap}
+:root{--blue:#1559d6;--blue-deep:#0b3a9a;--blue-ink:#0d2a66;--sky:#eaf2ff;--sky-2:#d6e5ff;--mint:#12a37a;--mint-bg:#e3f6ef;
+  --ink:#14203a;--soft:#4e5b73;--line:#dde5f1;--paper:#f7f9fd;--card:#fff;--warn:#b0481b;color-scheme:light}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+[id]{scroll-margin-top:76px}
+body{margin:0;font:400 1.0625rem/1.6 'Onest',system-ui,sans-serif;color:var(--ink);background:var(--paper)}
+img{max-width:100%;height:auto}
+a{color:var(--blue);text-underline-offset:.2em}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:6px}
+::selection{background:var(--sky-2)}
+h1,h2,h3{line-height:1.08;letter-spacing:-.025em;text-wrap:balance;margin:0;color:var(--blue-ink)}
+h2{font-size:clamp(2rem,4.2vw,3rem);font-weight:750}
+h3{font-size:1.2rem;font-weight:700;letter-spacing:-.01em}
+p,li{text-wrap:pretty}
+.wrap{max-width:1140px;margin:0 auto;padding:0 clamp(18px,4vw,40px)}
+.skip{position:absolute;left:-9999px}.skip:focus{left:12px;top:12px;z-index:99;background:#fff;padding:8px 12px}
+
+/* header */
+.top{position:sticky;top:0;z-index:20;background:rgba(247,249,253,.88);backdrop-filter:saturate(1.5) blur(10px);-webkit-backdrop-filter:saturate(1.5) blur(10px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--blue-ink);font-weight:800;font-size:1.2rem;letter-spacing:-.02em}
+.brand img{width:36px;height:36px;border-radius:9px}
+.top nav{display:flex;align-items:center;gap:24px}
+.top nav a{color:var(--soft);text-decoration:none;font-weight:600;font-size:.95rem}
+.top nav a:hover{color:var(--blue)}
+.btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;border-radius:12px;padding:14px 22px;line-height:1.1;border:0;
+  transition:transform .15s cubic-bezier(.2,.8,.2,1),background .15s,box-shadow .15s}
+.btn:active{transform:translateY(1px)}
+.btn-blue{background:var(--blue);color:#fff;box-shadow:0 10px 24px -12px rgba(21,89,214,.8)}
+.btn-blue:hover{background:var(--blue-deep);color:#fff}
+.btn-quiet{background:var(--card);color:var(--blue-ink);border:1px solid var(--line)}
+.btn-quiet:hover{border-color:var(--blue);color:var(--blue)}
+.top .btn{padding:10px 16px;font-size:.92rem}
+.top nav a.btn-blue{color:#fff}
+
+/* hero */
+.hero{padding:clamp(48px,7vw,96px) 0 clamp(56px,7vw,96px);background:
+  radial-gradient(900px 480px at 85% -10%,var(--sky-2),transparent 70%),var(--paper)}
+.hero .wrap{display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(32px,5vw,72px);align-items:center}
+.tag{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:.9rem;color:var(--blue-deep);background:var(--sky);border:1px solid var(--sky-2);border-radius:999px;padding:6px 14px;margin:0 0 22px}
+.tag i{width:8px;height:8px;border-radius:50%;background:var(--mint)}
+.hero h1{font-size:clamp(2.8rem,6.4vw,5rem);font-weight:800;letter-spacing:-.045em;line-height:.98}
+.hero h1 span{color:var(--blue)}
+.hero .lead{font-size:clamp(1.12rem,1.8vw,1.3rem);color:var(--soft);max-width:44ch;margin:22px 0 30px}
+.hero .cta{display:flex;flex-wrap:wrap;gap:12px}
+.hero .fine{margin:22px 0 0;color:var(--soft);font-size:.95rem}
+
+/* the demo: a generic perio chart filling in by voice */
+.demo{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 30px 60px -36px rgba(13,42,102,.45);position:relative}
+.demo-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.demo-top b{color:var(--blue-ink);font-size:1rem}
+.mic{display:inline-flex;align-items:center;gap:8px;font-size:.85rem;font-weight:700;color:var(--mint);background:var(--mint-bg);border-radius:999px;padding:5px 12px}
+.mic i{width:8px;height:8px;border-radius:50%;background:var(--mint)}
+.said{min-height:56px;display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.bubble{display:inline-flex;align-items:center;gap:10px;font-size:1.25rem;font-weight:700;color:var(--blue-ink);background:var(--sky);border-radius:16px 16px 16px 4px;padding:10px 16px}
+.bubble svg{width:20px;height:20px;flex:none}
+.chart{width:100%;border-collapse:separate;border-spacing:6px;table-layout:fixed;font-variant-numeric:tabular-nums}
+.chart th{font-size:.78rem;font-weight:700;color:var(--soft);text-align:center;padding:0 0 2px}
+.chart th:first-child{text-align:left}
+.chart td{height:46px;text-align:center;font-weight:800;font-size:1.3rem;color:var(--blue-ink);background:var(--paper);border:1.5px solid var(--line);border-radius:10px;position:relative}
+.chart td.row{background:none;border:0;text-align:left;font-size:.85rem;font-weight:700;color:var(--soft)}
+.chart td.on{border-color:var(--blue);box-shadow:0 0 0 3px var(--sky-2)}
+.chart td.bop::after{content:"";position:absolute;top:6px;right:6px;width:9px;height:9px;border-radius:50%;background:#d63d3d}
+.chart td.fill{animation:pop .35s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{from{transform:scale(.8);background:var(--sky-2)}to{transform:none}}
+.balloon{margin-top:14px;display:flex;align-items:center;gap:10px;font-size:.92rem;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 14px;min-height:44px}
+.balloon svg{width:18px;height:18px;flex:none;color:var(--mint)}
+.balloon b{font-weight:700}
+
+.stage{position:relative;padding-left:150px}
+.hero-parrot{position:absolute;left:-56px;bottom:-26px;width:220px;height:auto;z-index:2;filter:drop-shadow(0 18px 18px rgba(13,42,102,.22))}
+.why{background:#fff;border-block:1px solid var(--line)}
+.why-in{display:grid;grid-template-columns:auto 1fr;gap:clamp(24px,5vw,72px);align-items:center}
+.why-in img{width:clamp(150px,18vw,230px);height:auto}
+.early-parrot{width:150px!important;height:auto!important;border-radius:0!important;box-shadow:none!important;filter:drop-shadow(0 16px 20px rgba(0,0,0,.35))}
+section{padding:clamp(64px,9vw,112px) 0}
+.eyeless{margin:18px 0 0;color:var(--soft);font-size:1.12rem;max-width:60ch}
+.problem{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(28px,5vw,72px);align-items:start}
+.stat{font-size:clamp(4rem,10vw,7.5rem);font-weight:800;letter-spacing:-.05em;line-height:.9;color:var(--blue)}
+.stat-note{color:var(--soft);margin:10px 0 0;max-width:30ch}
+.wins{display:grid;gap:18px;margin:0;padding:0;list-style:none}
+.wins li{display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start;margin:0}
+.wins svg{width:44px;height:44px;padding:10px;border-radius:12px;background:var(--sky);color:var(--blue);fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.wins p{margin:.25rem 0 0;color:var(--soft)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:40px 0 0;padding:0;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;margin:0}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--blue);color:#fff;font-weight:800;margin-bottom:16px}
+.steps p{margin:.5rem 0 0;color:var(--soft)}
+.band{background:var(--blue-ink);color:#d7e3fb}
+.band h2,.band h3{color:#fff}
+.say{width:100%;border-collapse:collapse;margin-top:34px;font-size:1rem}
+.say th{text-align:left;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:#9fb6e6;padding:0 16px 10px 0;border-bottom:1px solid rgba(255,255,255,.18)}
+.say td{padding:14px 16px 14px 0;border-bottom:1px solid rgba(255,255,255,.1);vertical-align:top}
+.say td:first-child{font-weight:700;color:#fff;white-space:nowrap}
+.say td:nth-child(2){color:#d7e3fb}
+.say q{quotes:"\201C" "\201D"}
+.say-note{margin:22px 0 0;color:#b9cbef;max-width:70ch}
+.private{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,72px);align-items:center}
+.checks{list-style:none;padding:0;margin:26px 0 0;display:grid;gap:14px}
+.checks li{display:grid;grid-template-columns:26px 1fr;gap:12px;margin:0}
+.checks svg{width:26px;height:26px;color:var(--mint);fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.machine{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:28px;box-shadow:0 30px 60px -40px rgba(13,42,102,.45)}
+.machine .flow{display:grid;gap:10px}
+.flow div{display:flex;align-items:center;gap:12px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-weight:650}
+.flow svg{width:22px;height:22px;flex:none;color:var(--blue);fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.flow .arrow{justify-content:center;background:none;border:0;padding:0;color:var(--soft);font-weight:500;font-size:.85rem}
+.machine .wall{margin-top:16px;display:flex;align-items:center;gap:10px;color:var(--mint);font-weight:700;font-size:.95rem}
+.req{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:34px}
+.req div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+.req p{margin:.45rem 0 0;color:var(--soft)}
+.early{text-align:center;background:linear-gradient(160deg,var(--blue) 0%,var(--blue-deep) 100%);color:#e4edff}
+.early h2{color:#fff;max-width:20ch;margin:0 auto}
+.early p{max-width:56ch;margin:18px auto 0;font-size:1.12rem}
+.early img{width:84px;height:84px;border-radius:20px;margin:0 auto 22px;display:block;box-shadow:0 16px 30px -14px rgba(0,0,0,.5)}
+footer{padding:34px 0;font-size:.88rem;color:var(--soft);background:var(--paper)}
+footer .wrap{display:grid;gap:10px}
+footer p{margin:0;max-width:90ch}
+
+@media (max-width:940px){
+  .hero .wrap,.problem,.private{grid-template-columns:1fr}
+  .steps,.req{grid-template-columns:1fr}
+  .stage{padding-left:0;padding-top:120px}
+  .hero-parrot{left:auto;right:10px;top:0;bottom:auto;width:130px}
+  .why-in{grid-template-columns:1fr}
+  .why-in img{width:150px}
+  .top nav a:not(.btn){display:none}
+}
+@media (max-width:560px){
+  .say td:first-child{white-space:normal}
+  .chart td{height:40px;font-size:1.1rem}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="img/icon.svg" alt="" width="36" height="36">PerioParrot</a>
+    <nav aria-label="Main">
+      <a href="#how">How it works</a>
+      <a href="#commands">What you can say</a>
+      <a href="#private">Privacy</a>
+      <a class="btn btn-blue" href="#early-access">Early access</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<div class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <p class="tag"><i aria-hidden="true"></i>Now in testing with a working dental practice</p>
+      <h1>Chart perio <span>by voice.</span></h1>
+      <p class="lead">Say pocket depths, bleeding, furcation, mobility, and recession out loud. PerioParrot repeats them
+        straight into your perio chart, so your hands stay on the probe and your eyes stay on the patient.</p>
+      <div class="cta">
+        <a class="btn btn-blue" href="#early-access">Get early access</a>
+        <a class="btn btn-quiet" href="#how">See how it works</a>
+      </div>
+      <p class="fine">For Windows practices using Dentrix<sup>®</sup> and other charting software that accepts keyboard entry.</p>
+    </div>
+
+    <div class="stage">
+    <img class="hero-parrot" src="img/parrot.svg" alt="PerioParrot, a blue and gold macaw perched on a dental probe" width="240" height="270">
+    <div class="demo" aria-label="Example: speaking perio values into a chart">
+      <div class="demo-top"><b>Tooth #3 &middot; buccal</b><span class="mic"><i aria-hidden="true"></i>Listening</span></div>
+      <div class="said" aria-live="off"><span class="bubble" id="bubble"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span id="word">&ldquo;three&rdquo;</span></span></div>
+      <table class="chart" aria-hidden="true">
+        <thead><tr><th></th><th>MB</th><th>B</th><th>DB</th></tr></thead>
+        <tbody>
+          <tr><td class="row">PD</td><td id="c0">3</td><td id="c1">2</td><td id="c2" class="bop">4</td></tr>
+          <tr><td class="row">GM</td><td id="c3">1</td><td id="c4"></td><td id="c5"></td></tr>
+          <tr><td class="row">Furc</td><td></td><td id="c6">II</td><td></td></tr>
+        </tbody>
+      </table>
+      <div class="balloon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg><span id="ent"><b>Entered:</b> furcation two</span></div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap problem">
+    <div>
+      <div class="stat">192</div>
+      <p class="stat-note">pocket depths in a full-mouth exam: 32 teeth, 6 sites each. Plus bleeding, recession,
+        furcation, and mobility.</p>
+    </div>
+    <div>
+      <h2>Stop putting the probe down.</h2>
+      <p class="eyeless">Charting alone means probe, keyboard, probe, keyboard, hundreds of times. Charting with a
+        helper means calling out numbers and hoping they're heard right. PerioParrot lets you just say them.</p>
+      <ul class="wins" style="margin-top:30px">
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v4l2.5 2.5"/><circle cx="12" cy="12" r="9"/></svg>
+          <div><h3>Faster exams</h3><p>Keep probing while you talk. No reaching for the keyboard between sites.</p></div></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>
+          <div><h3>Fewer charting mistakes</h3><p>Values go into the chart the moment you say them, with a confirmation after
+            every entry. Anything it doesn't clearly recognize is ignored, never guessed.</p></div></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14c2 .7 3 2.6 3 6"/></svg>
+          <div><h3>Chart without a second person</h3><p>Hygienists can complete the perio chart solo, and assistants are free for
+            everything else.</p></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="how" style="background:#fff;border-block:1px solid var(--line)">
+  <div class="wrap">
+    <h2>Click. Speak. Glance.</h2>
+    <p class="eyeless">PerioParrot runs quietly in the Windows system tray. There's nothing new to learn in your charting
+      software. It types exactly as if you were typing yourself.</p>
+    <ol class="steps">
+      <li><h3>Click the first field</h3><p>Open the patient's perio chart and click the site where you'd start typing.
+        Turn listening on from the tray.</p></li>
+      <li><h3>Say the values</h3><p>&ldquo;Three.&rdquo; &ldquo;Two.&rdquo; &ldquo;Four.&rdquo; &ldquo;Bleeding.&rdquo;
+        One value at a time, in a normal voice. Your chart advances the way it always does.</p></li>
+      <li><h3>Glance at the confirmation</h3><p>After every phrase a small pop-up shows what was entered, so a mistake
+        is caught on the spot, not at the end of the exam.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="band" id="commands">
+  <div class="wrap">
+    <h2>What you can say</h2>
+    <table class="say">
+      <thead><tr><th scope="col">Say</th><th scope="col">PerioParrot enters</th></tr></thead>
+      <tbody>
+        <tr><td><q>zero</q> through <q>nine</q></td><td>A pocket depth, one digit per site. For 10 and up, say the digits: <q>one</q>, <q>zero</q>.</td></tr>
+        <tr><td><q>bleeding</q></td><td>Bleeding on probing</td></tr>
+        <tr><td><q>suppuration</q></td><td>Suppuration / exudate</td></tr>
+        <tr><td><q>furcation one</q> … <q>four</q></td><td>Furcation grade I–IV, in a single phrase</td></tr>
+        <tr><td><q>mobility one</q> … <q>three</q></td><td>Mobility class 1–3, in a single phrase</td></tr>
+        <tr><td><q>recession two</q></td><td>Gingival margin for the site, then back to pocket depth. Negative values work too: <q>recession negative one</q>.</td></tr>
+        <tr><td><q>next</q> / <q>back</q></td><td>Move one field forward or back without entering a value</td></tr>
+        <tr><td><q>pause listening</q> / <q>resume listening</q></td><td>Step away mid-exam without losing your place</td></tr>
+      </tbody>
+    </table>
+    <p class="say-note">Coughs, side conversations, and anything off the list are ignored. You'll see a
+      &ldquo;Not understood&rdquo; pop-up and nothing is typed.</p>
+  </div>
+</section>
+
+<section class="why" id="why-parrot">
+  <div class="wrap why-in">
+    <img src="img/parrot.svg" alt="" width="240" height="270">
+    <div>
+      <h2>Why a parrot?</h2>
+      <p class="eyeless">Because that's the whole job. You say &ldquo;three,&rdquo; and PerioParrot repeats
+        &ldquo;3&rdquo; into the chart, exactly as you said it. And like any well-trained bird, it only repeats what it
+        heard clearly. If it isn't sure, it stays quiet and lets you know.</p>
+    </div>
+  </div>
+</section>
+
+<section id="private">
+  <div class="wrap private">
+    <div>
+      <h2>Your patients' data stays in your office.</h2>
+      <p class="eyeless">PerioParrot listens and transcribes on the workstation itself. It doesn't need the cloud, an
+        account, or a connection to your practice software's database.</p>
+      <ul class="checks">
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg><span><strong>Speech is processed on the computer.</strong> No audio is sent anywhere.</span></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg><span><strong>Nothing is sent to us.</strong> PerioParrot doesn't phone home with your data.</span></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg><span><strong>No database access, no integration project.</strong> It types into the chart like a keyboard, nothing more.</span></li>
+      </ul>
+    </div>
+    <div class="machine" aria-hidden="true">
+      <div class="flow">
+        <div><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>Your microphone</div>
+        <div class="arrow"><svg viewBox="0 0 24 24" style="width:18px;height:18px;color:var(--soft)"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+        <div><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>PerioParrot, on the workstation</div>
+        <div class="arrow"><svg viewBox="0 0 24 24" style="width:18px;height:18px;color:var(--soft)"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+        <div><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11M15 9v11"/></svg>Your perio chart</div>
+      </div>
+      <p class="wall"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Never leaves the room</p>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <h2>What you need</h2>
+    <div class="req">
+      <div><h3>A Windows PC</h3><p>Windows 10 or 11. PerioParrot is a single program, with nothing else to install.</p></div>
+      <div><h3>A microphone</h3><p>Any microphone the computer can hear clearly. One-time internet access during setup.</p></div>
+      <div><h3>Your perio chart</h3><p>Dentrix, or other charting software that accepts keyboard entry.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="early" id="early-access">
+  <div class="wrap">
+    <img src="img/parrot.svg" alt="" width="160" height="180" class="early-parrot">
+    <h2>Be one of the first practices to try it.</h2>
+    <p>PerioParrot is being developed and tested alongside a working dental practice. Early access for more offices
+      is opening soon.</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>&copy; 2026 DPSystems, LLC. PerioParrot is a product of DPSystems, LLC.</p>
+    <p>Dentrix<sup>®</sup> is a registered trademark of Henry Schein One, LLC. PerioParrot and DPSystems, LLC are not
+      affiliated with, endorsed by, or sponsored by Henry Schein One or any other practice-management vendor. Product
+      names are used only to describe compatibility.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var steps = [
+    ['three','c0','3','three'],['two','c1','2','two'],['four','c2','4','four'],['bleeding','c2','bop','bleeding'],
+    ['recession one','c3','1','recession one'],['furcation two','c6','II','furcation two']
+  ];
+  var cells = ['c0','c1','c2','c3','c4','c5','c6'].map(function(id){return document.getElementById(id)});
+  var word = document.getElementById('word'), ent = document.getElementById('ent');
+  function reset(){ cells.forEach(function(c){ c.textContent=''; c.classList.remove('bop','on','fill'); }); cells[0].classList.add('on'); }
+  var i = 0;
+  function tick(){
+    if (i === 0) reset();
+    var s = steps[i], cell = document.getElementById(s[1]);
+    word.textContent = '“' + s[0] + '”';
+    cells.forEach(function(c){ c.classList.remove('on','fill'); });
+    if (s[2] === 'bop') cell.classList.add('bop'); else cell.textContent = s[2];
+    void cell.offsetWidth; cell.classList.add('on','fill');
+    ent.innerHTML = '<b>Entered:</b> ' + s[3];
+    i = (i + 1) % steps.length;
+    setTimeout(tick, i === 0 ? 3200 : 1500);
+  }
+  setTimeout(tick, 1200);
+})();
+</script>
+</body>
+</html>
