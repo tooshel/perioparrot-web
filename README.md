@@ -1,12 +1,13 @@
-# perioparrot.tooshel.com
+# perioparrot.com
 
 Marketing site for **PerioParrot** (formerly PerioVox), voice-input perio charting from DPSystems, LLC. The app
 itself lives in the private repo dbacks95fan/periovox; this repo is only the public website. The old
 periovox.tooshel.com site (tooshel/periovox-web) is left up as it was.
 
 One hand-written page, no build step: edit `index.html`, commit, push. GitHub Pages serves the repo root; `CNAME`
-keeps the custom domain. DNS: `perioparrot` CNAME to tooshel.github.io on the tooshel.com Cloudflare zone
-(DNS-only).
+keeps the custom domain. DNS for perioparrot.com is on Cloudflare (apex A/AAAA to GitHub Pages, `www` CNAME to
+tooshel.github.io, all DNS-only). The earlier address perioparrot.tooshel.com 301-redirects here through a
+Cloudflare redirect rule on the tooshel.com zone.
 
 ## The parrot
 
